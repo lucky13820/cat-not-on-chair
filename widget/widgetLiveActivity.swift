@@ -34,18 +34,25 @@ struct widgetLiveActivity: Widget {
                         .font(.headline)
                         .foregroundColor(context.state.isBreakTime ? .green : .blue)
                     
-                    Text(timeString(from: context.state.timeRemaining))
-                        .font(.system(size: 24, weight: .bold))
-                        .monospacedDigit()
+                    // Use TimelineView for auto-updating timer even when not being updated by app
+                    TimelineView(.periodic(from: Date(), by: 60)) { _ in
+                        Text(timeString(from: max(0, context.state.endTime.timeIntervalSinceNow)))
+                            .font(.system(size: 24, weight: .bold))
+                            .monospacedDigit()
+                            .contentTransition(.numericText()) // Smooth transitions
+                    }
                 }
                 
                 Spacer()
                 
-                CircularProgressView(
-                    progress: progress(for: context),
-                    color: context.state.isBreakTime ? .green : .blue
-                )
-                .frame(width: 40, height: 40)
+                // Use TimelineView for auto-updating progress
+                TimelineView(.animation) { _ in
+                    CircularProgressView(
+                        progress: progress(for: context),
+                        color: context.state.isBreakTime ? .green : .blue
+                    )
+                    .frame(width: 40, height: 40)
+                }
             }
             .padding()
             .activityBackgroundTint(Color.white.opacity(0.8))
@@ -66,17 +73,24 @@ struct widgetLiveActivity: Widget {
                 }
                 
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text(timeString(from: context.state.timeRemaining))
-                        .font(.system(size: 24, weight: .bold))
-                        .monospacedDigit()
-                        .foregroundColor(context.state.isBreakTime ? .green : .blue)
+                    // Use TimelineView for auto-updating
+                    TimelineView(.periodic(from: Date(), by: 1)) { _ in
+                        Text(timeString(from: max(0, context.state.endTime.timeIntervalSinceNow)))
+                            .font(.system(size: 24, weight: .bold))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .foregroundColor(context.state.isBreakTime ? .green : .blue)
+                    }
                 }
                 
                 DynamicIslandExpandedRegion(.center) {
-                    ProgressView(value: progress(for: context))
-                        .progressViewStyle(.linear)
-                        .tint(context.state.isBreakTime ? .green : .blue)
-                        .frame(height: 6)
+                    // Use TimelineView for auto-updating progress
+                    TimelineView(.periodic(from: Date(), by: 0.5)) { _ in
+                        ProgressView(value: progress(for: context))
+                            .progressViewStyle(.linear)
+                            .tint(context.state.isBreakTime ? .green : .blue)
+                            .frame(height: 6)
+                    }
                 }
                 
                 DynamicIslandExpandedRegion(.bottom) {
@@ -96,10 +110,14 @@ struct widgetLiveActivity: Widget {
                     .foregroundColor(context.state.isBreakTime ? .green : .blue)
             } compactTrailing: {
                 // Compact Trailing View
-                Text(timeString(from: context.state.timeRemaining))
-                    .font(.caption2)
-                    .monospacedDigit()
-                    .foregroundColor(context.state.isBreakTime ? .green : .blue)
+                // Use TimelineView for auto-updating
+                TimelineView(.periodic(from: Date(), by: 1)) { _ in
+                    Text(timeString(from: max(0, context.state.endTime.timeIntervalSinceNow)))
+                        .font(.caption2)
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                        .foregroundColor(context.state.isBreakTime ? .green : .blue)
+                }
             } minimal: {
                 // Minimal View
                 Image(systemName: context.state.isBreakTime ? "cup.and.saucer.fill" : "timer")
@@ -109,10 +127,16 @@ struct widgetLiveActivity: Widget {
     }
     
     private func progress(for context: ActivityViewContext<TimerAttributes>) -> Double {
-        let totalDuration = context.state.endTime.timeIntervalSince(
+        // Calculate total duration from end time and time remaining
+        let totalTime = context.state.endTime.timeIntervalSince(
             context.state.endTime.addingTimeInterval(-context.state.timeRemaining)
         )
-        let currentProgress = 1.0 - (context.state.timeRemaining / totalDuration)
+        
+        // Get current time from endTime - now, not from timeRemaining property
+        // This ensures the progress updates even if the app isn't updating the activity
+        let currentTimeRemaining = max(0, context.state.endTime.timeIntervalSinceNow)
+        let currentProgress = 1.0 - (currentTimeRemaining / totalTime)
+        
         return min(max(currentProgress, 0.0), 1.0) // Ensure value is between 0 and 1
     }
     
@@ -161,6 +185,7 @@ struct CircularProgressView: View {
                 .trim(from: 0, to: progress)
                 .stroke(color, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                 .rotationEffect(.degrees(-90))
+                .animation(.easeInOut, value: progress) // Smooth progress animation
         }
     }
 }

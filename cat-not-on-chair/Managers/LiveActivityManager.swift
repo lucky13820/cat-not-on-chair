@@ -1,8 +1,9 @@
 import Foundation
 import ActivityKit
 import SwiftUI
+import Combine
 
-// Define the attributes in this file to avoid ambiguity
+// Define the attributes here to avoid ambiguity
 struct TimerAttributes: ActivityAttributes {
     struct ContentState: Codable, Hashable {
         var timeRemaining: TimeInterval
@@ -12,13 +13,46 @@ struct TimerAttributes: ActivityAttributes {
 }
 
 @MainActor
-final class LiveActivityManager {
+final class LiveActivityManager: ObservableObject {
     static let shared = LiveActivityManager()
+    
+    @Published private(set) var isActivityRunning = false
     
     private var activity: Activity<TimerAttributes>?
     private var updateTimer: Timer?
+    private var cancellables = Set<AnyCancellable>()
     
-    private init() {}
+    private init() {
+        // Set up app state monitoring
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [weak self] _ in self?.appDidEnterBackground() }
+            .store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in self?.appWillEnterForeground() }
+            .store(in: &cancellables)
+    }
+    
+    private func appDidEnterBackground() {
+        // When app enters background, make sure update timer keeps running
+        if updateTimer != nil {
+            DispatchQueue.main.async {
+                self.startUpdateTimer()
+            }
+        }
+    }
+    
+    private func appWillEnterForeground() {
+        // App returning to foreground - might need to recalculate things
+        if let activity = activity {
+            let timeRemaining = max(0, activity.content.state.endTime.timeIntervalSinceNow)
+            if timeRemaining > 0 {
+                updateLiveActivity(timeRemaining: timeRemaining)
+            } else {
+                stopLiveActivity()
+            }
+        }
+    }
     
     func startLiveActivity(isBreakTime: Bool, timeRemaining: TimeInterval, endTime: Date) {
         // Check if Activity is supported on this device
@@ -41,15 +75,16 @@ final class LiveActivityManager {
         let attributes = TimerAttributes()
         
         do {
-            // Use basic version of request that works across iOS versions
+            // Use the simplest API that works across iOS versions
             activity = try Activity<TimerAttributes>.request(
                 attributes: attributes,
                 contentState: contentState
             )
             
+            isActivityRunning = true
             print("Live Activity started successfully with ID: \(activity?.id ?? "unknown")")
             
-            // Setup update timer to regularly refresh the widget (every 1 second)
+            // Setup update timer to regularly refresh the widget
             startUpdateTimer()
             
         } catch {
@@ -63,7 +98,6 @@ final class LiveActivityManager {
         
         // Create a new timer that fires every second to update the activity
         updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            // Use Task to switch back to the MainActor context
             Task { @MainActor [weak self] in
                 guard let self = self, let activity = self.activity else { return }
                 
@@ -71,13 +105,19 @@ final class LiveActivityManager {
                 let currentTimeRemaining = max(0, activity.content.state.endTime.timeIntervalSinceNow)
                 
                 if currentTimeRemaining > 0 {
-                    self.updateLiveActivity(timeRemaining: currentTimeRemaining)
+                    // Only update every few seconds to reduce overhead
+                    if Int(currentTimeRemaining) % 3 == 0 || currentTimeRemaining < 10 {
+                        self.updateLiveActivity(timeRemaining: currentTimeRemaining)
+                    }
                 } else {
                     // Timer completed
                     self.stopLiveActivity()
                 }
             }
         }
+        
+        // Make sure timer runs when app is in background
+        RunLoop.current.add(updateTimer!, forMode: .common)
     }
     
     func updateLiveActivity(timeRemaining: TimeInterval) {
@@ -109,6 +149,7 @@ final class LiveActivityManager {
         Task {
             await activity.end(dismissalPolicy: .immediate)
             self.activity = nil
+            isActivityRunning = false
             print("Live Activity ended successfully")
         }
     }
@@ -157,6 +198,7 @@ final class LiveActivityManager {
         updateTimer = nil
         
         self.activity = nil
+        isActivityRunning = false
         print("Stopped \(activities.count) Live Activities")
     }
 } 
