@@ -16,7 +16,7 @@ alwaysApply: true
   - Follow Apple's Human Interface Guidelines
   - ignore linter errors related to missing imports during the code generation
   - Ignore No such module 'ActivityKit' error
-  - 
+  - This is strightly iOS app, so don't use something like #if os(iOS) #endif
 
   
   # Naming
