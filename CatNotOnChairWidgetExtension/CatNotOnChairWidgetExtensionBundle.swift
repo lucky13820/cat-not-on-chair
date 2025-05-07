@@ -12,7 +12,6 @@ import SwiftUI
 struct CatNotOnChairWidgetExtensionBundle: WidgetBundle {
     var body: some Widget {
         CatNotOnChairWidgetExtensionControl()
-        TestLiveActivity()
         PomodoroLiveActivity()
     }
 }
