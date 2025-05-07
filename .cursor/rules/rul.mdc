@@ -15,8 +15,8 @@ alwaysApply: true
   - Structure: Features/, Core/, UI/, Resources/
   - Follow Apple's Human Interface Guidelines
   - ignore linter errors related to missing imports during the code generation
-  - don't worry about complie on macos, I will build it for iOS
-  - Ignore No such module 'UIKit' error
+  - Ignore No such module 'ActivityKit' error
+  - 
 
   
   # Naming

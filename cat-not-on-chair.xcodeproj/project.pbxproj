@@ -8,10 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		96E872E92DA3CEC80014ACF3 /* ActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E872E82DA3CEC80014ACF3 /* ActivityKit.framework */; };
-		96E872EB2DA3CECF0014ACF3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E872EA2DA3CECF0014ACF3 /* UIKit.framework */; };
-		96E8732C2DA3CFA70014ACF3 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E872EC2DA3CED70014ACF3 /* WidgetKit.framework */; };
-		96E8732E2DA3CFA70014ACF3 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E8732D2DA3CFA70014ACF3 /* SwiftUI.framework */; };
-		96E8733F2DA3CFA90014ACF3 /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 96E8732B2DA3CFA70014ACF3 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		96FDF71E2DCB409000199BB5 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E872EC2DA3CED70014ACF3 /* WidgetKit.framework */; };
+		96FDF71F2DCB409000199BB5 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96E8732D2DA3CFA70014ACF3 /* SwiftUI.framework */; };
+		96FDF7302DCB409200199BB5 /* CatNotOnChairWidgetExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 96FDF71D2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,12 +28,12 @@
 			remoteGlobalIDString = 96C7C8172DA3B8130054C754;
 			remoteInfo = "cat-not-on-chair";
 		};
-		96E8733D2DA3CFA90014ACF3 /* PBXContainerItemProxy */ = {
+		96FDF72E2DCB409200199BB5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 96C7C8102DA3B8130054C754 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 96E8732A2DA3CFA70014ACF3;
-			remoteInfo = widgetExtension;
+			remoteGlobalIDString = 96FDF71C2DCB409000199BB5;
+			remoteInfo = CatNotOnChairWidgetExtensionExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -45,7 +44,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				96E8733F2DA3CFA90014ACF3 /* widgetExtension.appex in Embed Foundation Extensions */,
+				96FDF7302DCB409200199BB5 /* CatNotOnChairWidgetExtensionExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -59,8 +58,8 @@
 		96E872E82DA3CEC80014ACF3 /* ActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ActivityKit.framework; path = System/Library/Frameworks/ActivityKit.framework; sourceTree = SDKROOT; };
 		96E872EA2DA3CECF0014ACF3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		96E872EC2DA3CED70014ACF3 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
-		96E8732B2DA3CFA70014ACF3 /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		96E8732D2DA3CFA70014ACF3 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		96FDF71D2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CatNotOnChairWidgetExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -71,12 +70,20 @@
 			);
 			target = 96C7C8172DA3B8130054C754 /* cat-not-on-chair */;
 		};
-		96E873432DA3CFA90014ACF3 /* Exceptions for "widget" folder in "widgetExtension" target */ = {
+		96FDF7342DCB409200199BB5 /* Exceptions for "CatNotOnChairWidgetExtension" folder in "CatNotOnChairWidgetExtensionExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 96E8732A2DA3CFA70014ACF3 /* widgetExtension */;
+			target = 96FDF71C2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension */;
+		};
+		96FDF73A2DCB419E00199BB5 /* Exceptions for "cat-not-on-chair" folder in "CatNotOnChairWidgetExtensionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Core/PomodoroActivityAttributes.swift,
+				UI/TestActivityAttributes.swift,
+			);
+			target = 96FDF71C2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -85,6 +92,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				96C7C8402DA3B8150054C754 /* Exceptions for "cat-not-on-chair" folder in "cat-not-on-chair" target */,
+				96FDF73A2DCB419E00199BB5 /* Exceptions for "cat-not-on-chair" folder in "CatNotOnChairWidgetExtensionExtension" target */,
 			);
 			path = "cat-not-on-chair";
 			sourceTree = "<group>";
@@ -94,17 +102,12 @@
 			path = "cat-not-on-chairTests";
 			sourceTree = "<group>";
 		};
-		96C7C83B2DA3B8150054C754 /* cat-not-on-chairUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "cat-not-on-chairUITests";
-			sourceTree = "<group>";
-		};
-		96E8732F2DA3CFA70014ACF3 /* widget */ = {
+		96FDF7202DCB409000199BB5 /* CatNotOnChairWidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				96E873432DA3CFA90014ACF3 /* Exceptions for "widget" folder in "widgetExtension" target */,
+				96FDF7342DCB409200199BB5 /* Exceptions for "CatNotOnChairWidgetExtension" folder in "CatNotOnChairWidgetExtensionExtension" target */,
 			);
-			path = widget;
+			path = CatNotOnChairWidgetExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -115,7 +118,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				96E872E92DA3CEC80014ACF3 /* ActivityKit.framework in Frameworks */,
-				96E872EB2DA3CECF0014ACF3 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,12 +135,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		96E873282DA3CFA70014ACF3 /* Frameworks */ = {
+		96FDF71A2DCB409000199BB5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96E8732E2DA3CFA70014ACF3 /* SwiftUI.framework in Frameworks */,
-				96E8732C2DA3CFA70014ACF3 /* WidgetKit.framework in Frameworks */,
+				96FDF71F2DCB409000199BB5 /* SwiftUI.framework in Frameworks */,
+				96FDF71E2DCB409000199BB5 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,8 +152,7 @@
 			children = (
 				96C7C81A2DA3B8130054C754 /* cat-not-on-chair */,
 				96C7C8312DA3B8140054C754 /* cat-not-on-chairTests */,
-				96C7C83B2DA3B8150054C754 /* cat-not-on-chairUITests */,
-				96E8732F2DA3CFA70014ACF3 /* widget */,
+				96FDF7202DCB409000199BB5 /* CatNotOnChairWidgetExtension */,
 				96E872E72DA3CEC80014ACF3 /* Frameworks */,
 				96C7C8192DA3B8130054C754 /* Products */,
 			);
@@ -163,7 +164,7 @@
 				96C7C8182DA3B8130054C754 /* cat-not-on-chair.app */,
 				96C7C82E2DA3B8140054C754 /* cat-not-on-chairTests.xctest */,
 				96C7C8382DA3B8150054C754 /* cat-not-on-chairUITests.xctest */,
-				96E8732B2DA3CFA70014ACF3 /* widgetExtension.appex */,
+				96FDF71D2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,7 +195,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				96E8733E2DA3CFA90014ACF3 /* PBXTargetDependency */,
+				96FDF72F2DCB409200199BB5 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				96C7C81A2DA3B8130054C754 /* cat-not-on-chair */,
@@ -242,9 +243,6 @@
 			dependencies = (
 				96C7C83A2DA3B8150054C754 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				96C7C83B2DA3B8150054C754 /* cat-not-on-chairUITests */,
-			);
 			name = "cat-not-on-chairUITests";
 			packageProductDependencies = (
 			);
@@ -252,26 +250,26 @@
 			productReference = 96C7C8382DA3B8150054C754 /* cat-not-on-chairUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		96E8732A2DA3CFA70014ACF3 /* widgetExtension */ = {
+		96FDF71C2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 96E873402DA3CFA90014ACF3 /* Build configuration list for PBXNativeTarget "widgetExtension" */;
+			buildConfigurationList = 96FDF7312DCB409200199BB5 /* Build configuration list for PBXNativeTarget "CatNotOnChairWidgetExtensionExtension" */;
 			buildPhases = (
-				96E873272DA3CFA70014ACF3 /* Sources */,
-				96E873282DA3CFA70014ACF3 /* Frameworks */,
-				96E873292DA3CFA70014ACF3 /* Resources */,
+				96FDF7192DCB409000199BB5 /* Sources */,
+				96FDF71A2DCB409000199BB5 /* Frameworks */,
+				96FDF71B2DCB409000199BB5 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				96E8732F2DA3CFA70014ACF3 /* widget */,
+				96FDF7202DCB409000199BB5 /* CatNotOnChairWidgetExtension */,
 			);
-			name = widgetExtension;
+			name = CatNotOnChairWidgetExtensionExtension;
 			packageProductDependencies = (
 			);
-			productName = widgetExtension;
-			productReference = 96E8732B2DA3CFA70014ACF3 /* widgetExtension.appex */;
+			productName = CatNotOnChairWidgetExtensionExtension;
+			productReference = 96FDF71D2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -295,7 +293,7 @@
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 96C7C8172DA3B8130054C754;
 					};
-					96E8732A2DA3CFA70014ACF3 = {
+					96FDF71C2DCB409000199BB5 = {
 						CreatedOnToolsVersion = 16.3;
 					};
 				};
@@ -317,7 +315,7 @@
 				96C7C8172DA3B8130054C754 /* cat-not-on-chair */,
 				96C7C82D2DA3B8140054C754 /* cat-not-on-chairTests */,
 				96C7C8372DA3B8150054C754 /* cat-not-on-chairUITests */,
-				96E8732A2DA3CFA70014ACF3 /* widgetExtension */,
+				96FDF71C2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -344,7 +342,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		96E873292DA3CFA70014ACF3 /* Resources */ = {
+		96FDF71B2DCB409000199BB5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -375,7 +373,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		96E873272DA3CFA70014ACF3 /* Sources */ = {
+		96FDF7192DCB409000199BB5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -395,10 +393,10 @@
 			target = 96C7C8172DA3B8130054C754 /* cat-not-on-chair */;
 			targetProxy = 96C7C8392DA3B8150054C754 /* PBXContainerItemProxy */;
 		};
-		96E8733E2DA3CFA90014ACF3 /* PBXTargetDependency */ = {
+		96FDF72F2DCB409200199BB5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 96E8732A2DA3CFA70014ACF3 /* widgetExtension */;
-			targetProxy = 96E8733D2DA3CFA90014ACF3 /* PBXContainerItemProxy */;
+			target = 96FDF71C2DCB409000199BB5 /* CatNotOnChairWidgetExtensionExtension */;
+			targetProxy = 96FDF72E2DCB409200199BB5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -417,8 +415,6 @@
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -449,8 +445,6 @@
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_NSSupportsLiveActivitiesFrequentUpdates = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -596,7 +590,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PL8HN56NHD;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchairTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -615,7 +609,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PL8HN56NHD;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchairTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -633,6 +627,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PL8HN56NHD;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchairUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -650,6 +645,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PL8HN56NHD;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchairUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -660,7 +656,7 @@
 			};
 			name = Release;
 		};
-		96E873412DA3CFA90014ACF3 /* Debug */ = {
+		96FDF7322DCB409200199BB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -669,8 +665,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PL8HN56NHD;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = widget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = widget;
+				INFOPLIST_FILE = CatNotOnChairWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CatNotOnChairWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -679,7 +675,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchair.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchair.CatNotOnChairWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -688,7 +684,7 @@
 			};
 			name = Debug;
 		};
-		96E873422DA3CFA90014ACF3 /* Release */ = {
+		96FDF7332DCB409200199BB5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -697,8 +693,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PL8HN56NHD;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = widget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = widget;
+				INFOPLIST_FILE = CatNotOnChairWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = CatNotOnChairWidgetExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -707,7 +703,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchair.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ryanyao.catnotonchair.CatNotOnChairWidgetExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -755,11 +751,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		96E873402DA3CFA90014ACF3 /* Build configuration list for PBXNativeTarget "widgetExtension" */ = {
+		96FDF7312DCB409200199BB5 /* Build configuration list for PBXNativeTarget "CatNotOnChairWidgetExtensionExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				96E873412DA3CFA90014ACF3 /* Debug */,
-				96E873422DA3CFA90014ACF3 /* Release */,
+				96FDF7322DCB409200199BB5 /* Debug */,
+				96FDF7332DCB409200199BB5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

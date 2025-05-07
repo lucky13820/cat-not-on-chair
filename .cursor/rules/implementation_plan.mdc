@@ -1,0 +1,190 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Pomodoro Timer App - Implementation Plan
+
+## 1. Project Setup & Core Structure (MVVM)
+
+- **Objective:** Establish the foundational architecture and project organization.
+- **Tasks:**
+    - Create a new Xcode project.
+    - Set up Git repository and branching strategy (e.g., main, develop, feature branches).
+    - Define folder structure:
+        - `Features/`: Contains modules for each distinct feature (e.g., Timer, Settings, Stats).
+        - `Core/`: Contains shared components (e.g., Data Models, Services, Utilities, FamilyControlManager).
+        - `UI/`: Contains reusable UI components, themes, and styles.
+        - `Resources/`: Contains assets like images (cat, chair), localization files.
+    - Choose primary UI framework: SwiftUI.
+    - Implement basic MVVM structure:
+        - `Models`: Data structures (e.g., `FocusSession`, `UserSettings`).
+        - `Views`: SwiftUI views for each screen.
+        - `ViewModels`: Logic for views, state management using `@StateObject`, `@ObservedObject`, `@EnvironmentObject`.
+
+## 2. Feature: Focus Session Core (US1, US2)
+
+- **Objective:** Implement the main focus timer functionality, including app blocking.
+- **Tasks:**
+    - **Timer Logic:**
+        - Create `TimerViewModel` to manage focus and break session states (running, paused, stopped, type: focus/break).
+        - Implement timer countdown logic.
+        - Allow users to start, pause, stop, and reset sessions.
+    - **App Blocking (Family Control Integration - Technical Note):**
+        - Create `FamilyControlManager` in `Core/Services/`.
+        - Research and implement `FamilyControls` framework to:
+            - Request authorization from the user.
+            - Define app blocking modes:
+                - **Strict Mode:** Block all apps (except the Pomodoro app itself).
+                - **Whitelist Mode:** Allow users to select specific apps to use.
+                - **Relax Mode:** No app blocking (timer only).
+        - Integrate `FamilyControlManager` with `TimerViewModel` to activate/deactivate blocking based on session state and selected mode.
+    - **Session Configuration (US2):**
+        - UI for users to set focus duration and break duration.
+        - Store these settings (e.g., using `UserDefaults` initially, or a `UserSettings` model).
+    - **Session State Management (US2):**
+        - Logic to determine if a session is successful (completed fully or stopped during break) or failed (stopped during focus).
+    - **UI for Timer Screen:**
+        - Display current timer (minutes:seconds).
+        - Start/Pause/Stop buttons.
+        - Indication of current session type (Focus/Break).
+        - Cat and chair animation:
+            - Chair visible initially.
+            - Cat appears on the chair when a focus session starts.
+            - Cat disappears or animation changes when session ends/pauses or during breaks.
+        - Picker/Input fields for session duration settings.
+        - Selection for blocking mode (Strict, Whitelist, Relax).
+
+## 3. Feature: Live Activity & Background Execution (US1)
+
+- **Objective:** Ensure the timer continues and is visible even when the app is in the background.
+- **Tasks:**
+    - **Background Timer:**
+        - Implement background task handling to keep the timer running accurately when the app is backgrounded.
+        - Use `Timer` and manage its lifecycle appropriately.
+    - **Live Activity Widget:**
+        - Create a Live Activity extension.
+        - Define attributes and content state for the Live Activity (e.g., remaining time, session type).
+        - Design the UI for the Live Activity widget (dynamic island and lock screen).
+        - Start the Live Activity when a focus session begins and the app enters the background.
+        - Update the Live Activity with timer progress.
+        - End the Live Activity when the session is completed or the app is brought to the foreground.
+    - **Data Synchronization:**
+        - Ensure seamless transition of timer state between the main app and the Live Activity.
+
+## 4. Feature: Session History & Statistics (US3)
+
+- **Objective:** Allow users to view their past focus session data.
+- **Tasks:**
+    - **Data Persistence:**
+        - Design a `FocusSessionRecord` model (e.g., startTime, endTime, duration, focusDuration, breakDuration, status: successful/failed, mode).
+        - Choose a persistence method:
+            - `CoreData` for more structured querying and larger datasets.
+            - `UserDefaults` (encoded `Codable` objects) for simpler needs if data is not too complex or large.
+        - Save each completed session record.
+    - **Statistics Calculation:**
+        - `StatsViewModel` to fetch and process `FocusSessionRecord` data.
+        - Logic to calculate:
+            - Total focus sessions (week, month).
+            - Total failed sessions (week, month).
+            - Potentially: total focus time, success rate.
+    - **UI for Statistics Screen:**
+        - Display statistics for the past week and month.
+        - Potentially use charts or graphs for better visualization (SwiftUI Charts).
+        - List of past sessions with details.
+
+## 5. UI/UX Refinements & Theming
+
+- **Objective:** Ensure a pleasant and intuitive user experience with the cat theme.
+- **Tasks:**
+    - **Cat Theme Implementation (For all users):**
+        - Design and integrate cat and chair images/animations as described in PRD.
+        - Choose a color palette and typography that fits the theme.
+    - **App Icon:** Design a cat-themed app icon.
+    - **Accessibility:**
+        - Ensure Dynamic Type support.
+        - Add VoiceOver labels.
+        - Check color contrast.
+    - **Error Handling & User Feedback:**
+        - Provide clear messages for errors (e.g., Family Controls permission denied).
+        - Haptic feedback for interactions.
+    - **Navigation:** Implement clear navigation between Timer, Settings (if any beyond session config), and Stats screens.
+
+## 6. Settings & Configuration (Beyond Basic Session Durations)
+
+- **Objective:** Allow users to configure app-wide settings.
+- **Tasks (Future considerations, can be deferred if not MVP):**
+    - **Advanced Break Configuration (US2 - Future):**
+        - UI to set the number of short breaks before a long break.
+        - Logic to handle different break types (short/long).
+    - **App Whitelist Management (US1):**
+        - UI for users to pick apps for Whitelist mode (if `FamilyControls` allows granular selection easily). This might involve using a `FamilyActivityPicker`.
+    - **Notification Preferences:**
+        - Sound alerts for session end / break start.
+        - User settings to enable/disable notifications.
+
+## 7. Testing
+
+- **Objective:** Ensure app quality and stability.
+- **Tasks:**
+    - **Unit Tests (XCTest):**
+        - Test `TimerViewModel` logic (start, pause, stop, time calculation).
+        - Test `StatsViewModel` logic (data fetching, calculations).
+        - Test data model encoding/decoding.
+    - **UI Tests (XCUITest):**
+        - Test main user flows:
+            - Starting and completing a focus session.
+            - Navigating to stats screen.
+            - Changing session durations.
+    - **Manual Testing:**
+        - Test Family Controls integration thoroughly on a physical device.
+        - Test Live Activity functionality.
+        - Test background execution.
+        - Test behavior across different iOS versions and devices (if possible).
+
+## 8. App Store Preparation
+
+- **Objective:** Prepare the app for submission to the App Store.
+- **Tasks:**
+    - **Privacy Manifests:** Create `PrivacyInfo.xcprivacy` detailing data usage, especially for Family Controls and any analytics.
+    - **App Store Connect Setup:** Screenshots, description, keywords.
+    - **Capabilities:** Ensure Family Controls capability is correctly configured.
+    - **Build & Archive:** TestFlight builds for beta testing.
+
+## Milestones & Phasing (Suggested)
+
+- **Phase 1: Core Timer & Blocking**
+    - Project Setup
+    - Basic Timer UI and Logic (Focus/Break, Start/Pause/Stop)
+    - Family Controls integration (Strict mode initially)
+    - Basic session duration settings
+    - Cat/Chair basic display
+- **Phase 2: Live Activity & Persistence**
+    - Live Activity implementation
+    - Background timer functionality
+    - Basic data persistence for session records (e.g., using UserDefaults for simplicity first)
+- **Phase 3: Statistics & UI Polish**
+    - Statistics screen (basic data display)
+    - Refine cat/chair animations
+    - Whitelist & Relax modes for app blocking
+    - UI/UX improvements, theming
+- **Phase 4: Advanced Features & Testing**
+    - Advanced break configuration (if pursued)
+    - Comprehensive Unit and UI tests
+    - CoreData (if scaling beyond UserDefaults)
+    - App Store preparation
+
+## Assumptions & Dependencies
+
+- Requires iOS version supporting FamilyControls and Live Activities (iOS 16+).
+- User needs to grant permissions for FamilyControls.
+- Cat and chair assets will be provided/created.
+
+## Open Questions/Risks
+
+- Complexity of `FamilyActivityPicker` for Whitelist mode.
+- Ensuring robust background timer accuracy.
+- Managing state between app and Live Activity effectively.
+- User adoption of FamilyControls and understanding of its implications.
+
+This plan provides a structured approach to developing the Pomodoro Timer app. Each section can be broken down further into smaller tasks. Remember to follow Swift best practices and Apple's HIG throughout the development process.
