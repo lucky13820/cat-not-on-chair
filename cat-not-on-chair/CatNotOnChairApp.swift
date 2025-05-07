@@ -1,27 +1,31 @@
 import SwiftUI
-// import Features
-// import Timer
-// import Features.Timer.TimerView
-// TimerView is now in UI/TimerView.swift and should be accessible if included in the target
-#if os(iOS)
 import BackgroundTasks
 import UserNotifications
+
+#if canImport(UIKit)
 import UIKit
 #endif
 
+#if canImport(FamilyControls)
+import FamilyControls
+#endif
+
 // Import Core services and UI components
+@main
 struct CatNotOnChairApp: App {
     @Environment(\.scenePhase) private var scenePhase
-    #if os(iOS)
+    #if canImport(UIKit)
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     #endif
+    @StateObject private var timerViewModel = PomodoroTimerViewModel()
     
-    // Shared services
-    @StateObject private var blockModeService = BlockModeService()
-
     init() {
-        #if os(iOS)
         registerBackgroundTasks()
+        // Request authorization when app launches
+        #if canImport(FamilyControls)
+        Task {
+            await AppBlockingService.shared.requestAuthorization()
+        }
         #endif
     }
 
@@ -29,8 +33,7 @@ struct CatNotOnChairApp: App {
         WindowGroup {
             NavigationView {
                 TabView {
-                    TimerView()
-                        .environmentObject(blockModeService)
+                    TimerView(viewModel: timerViewModel)
                         .tabItem {
                             Label("Timer", systemImage: "timer")
                         }
@@ -42,8 +45,7 @@ struct CatNotOnChairApp: App {
                         }
                         .tag(2)
                         
-                    SettingsView()
-                        .environmentObject(blockModeService)
+                    SettingsView(viewModel: timerViewModel)
                         .tabItem {
                             Label("Settings", systemImage: "gear")
                         }
@@ -52,16 +54,18 @@ struct CatNotOnChairApp: App {
             }
         }
         .onChange(of: scenePhase) { newPhase in
-            #if os(iOS)
             if newPhase == .background {
                 scheduleAppRefresh()
                 scheduleBackgroundProcessing()
+            } else if newPhase == .active {
+                // Refresh authorization status when app becomes active
+                #if canImport(FamilyControls)
+                AppBlockingService.shared.checkAuthorizationStatus()
+                #endif
             }
-            #endif
         }
     }
-
-    #if os(iOS)
+    
     private func registerBackgroundTasks() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.ryanyao.catnotonchair.processing", using: nil) { task in
             self.handleBackgroundProcessing(task: task as! BGProcessingTask)
@@ -114,10 +118,9 @@ struct CatNotOnChairApp: App {
         print("Handling background processing task")
         task.setTaskCompleted(success: true)
     }
-    #endif
 }
 
-#if os(iOS)
+#if canImport(UIKit)
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self

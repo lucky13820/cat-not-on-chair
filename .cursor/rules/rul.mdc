@@ -17,6 +17,8 @@ alwaysApply: true
   - ignore linter errors related to missing imports during the code generation
   - Ignore No such module 'ActivityKit' error
   - This is strightly iOS app, so don't use something like #if os(iOS) #endif
+  - Ignore the macOS related lint error
+   - minimal requirement for the app is iOS 17, no need to be backward competiable for ios 15 and 16
 
   
   # Naming
@@ -42,7 +44,6 @@ alwaysApply: true
   - SF Symbols for icons
   - Support dark mode, dynamic type
   - SafeArea and GeometryReader for layout
-  - Handle all screen sizes and orientations
   - Implement proper keyboard handling
 
 
@@ -116,6 +117,7 @@ alwaysApply: true
   - Review guidelines
   - App thinning
   - Proper signing
+ 
 
 
   Follow Apple's documentation for detailed implementation guidance.

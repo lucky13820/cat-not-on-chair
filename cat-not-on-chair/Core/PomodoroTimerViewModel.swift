@@ -1,6 +1,16 @@
 import Foundation
 import Combine
+
+#if canImport(ActivityKit)
 import ActivityKit
+#endif
+
+#if canImport(FamilyControls)
+import FamilyControls
+#endif
+
+// Import local files using the Swift module structure
+// The BlockingMode enum is available because it's in the same module
 
 // MARK: - Timer State & Session Type
 
@@ -27,7 +37,11 @@ public final class PomodoroTimerViewModel: ObservableObject {
     @Published private(set) var sessionType: PomodoroSessionType = .focus
     @Published private(set) var remainingTime: TimeInterval = 0
     @Published private(set) var totalTime: TimeInterval = 0
-    @Published var isStrictMode: Bool = true // For blocking mode
+    @Published var blockingMode: BlockingMode {
+        didSet {
+            AppBlockingService.shared.blockingMode = blockingMode
+        }
+    }
     
     // MARK: - Timer Config
     var focusDuration: TimeInterval = 25 * 60 // 25 min default
@@ -38,13 +52,21 @@ public final class PomodoroTimerViewModel: ObservableObject {
     // MARK: - Private
     private var timerTask: Task<Void, Never>?
     private var completedFocusSessions = 0
+    #if canImport(ActivityKit)
     private var activity: Activity<PomodoroActivityAttributes>?
-    private var blockModeService: BlockModeService
-    
+    #endif
+    private let appBlockingService = AppBlockingService.shared
+
     // MARK: - Initialization
     
-    init(blockModeService: BlockModeService = BlockModeService()) {
-        self.blockModeService = blockModeService
+    init() {
+        self.blockingMode = appBlockingService.blockingMode
+        setupBlockingMode()
+    }
+    
+    private func setupBlockingMode() {
+        // Synchronize view model with service
+        appBlockingService.blockingMode = blockingMode
     }
     
     // MARK: - Public Methods
@@ -52,14 +74,18 @@ public final class PomodoroTimerViewModel: ObservableObject {
         switch sessionType {
         case .focus:
             totalTime = focusDuration
-            // Enable block mode if it's a focus session
-            if blockModeService.isBlockModeEnabled {
-                blockModeService.startBlocking()
+            // Start app blocking if in focus mode
+            Task {
+                await appBlockingService.startBlocking()
             }
         case .shortBreak:
             totalTime = shortBreakDuration
+            // Disable app blocking during breaks
+            appBlockingService.stopBlocking()
         case .longBreak:
             totalTime = longBreakDuration
+            // Disable app blocking during breaks
+            appBlockingService.stopBlocking()
         }
         remainingTime = totalTime
         timerState = .running
@@ -77,10 +103,8 @@ public final class PomodoroTimerViewModel: ObservableObject {
         }
         endLiveActivity()
         
-        // Disable block mode when timer is stopped
-        if blockModeService.isCurrentlyBlocking {
-            blockModeService.stopBlocking()
-        }
+        // Remove app blocking when stopping the timer
+        appBlockingService.stopBlocking()
     }
     
     func reset() {
@@ -93,6 +117,20 @@ public final class PomodoroTimerViewModel: ObservableObject {
         if sessionType != .focus {
             nextSession()
         }
+    }
+    
+    // App Selection for whitelist mode
+    func selectAllowedApps() async {
+        await appBlockingService.selectApps()
+    }
+    
+    // Check if we have family controls permission
+    func hasFamilyControlsPermission() -> Bool {
+        return appBlockingService.hasPermission
+    }
+    
+    func requestFamilyControlsPermission() async -> Bool {
+        return await appBlockingService.requestAuthorization()
     }
     
     // MARK: - Private Methods
@@ -115,11 +153,6 @@ public final class PomodoroTimerViewModel: ObservableObject {
     }
     
     private func handleSessionCompletion() {
-        // If we're finishing a focus session, stop blocking mode
-        if sessionType == .focus && blockModeService.isCurrentlyBlocking {
-            blockModeService.stopBlocking()
-        }
-        
         if sessionType == .focus {
             completedFocusSessions += 1
             if completedFocusSessions % sessionsBeforeLongBreak == 0 {
@@ -127,6 +160,8 @@ public final class PomodoroTimerViewModel: ObservableObject {
             } else {
                 sessionType = .shortBreak
             }
+            // Disable app blocking after focus session
+            appBlockingService.stopBlocking()
         } else {
             sessionType = .focus
         }
@@ -140,39 +175,51 @@ public final class PomodoroTimerViewModel: ObservableObject {
     }
     
     func startLiveActivity() {
-        let attributes = PomodoroActivityAttributes(
-            totalTime: totalTime,
-            sessionType: sessionTypeText
-        )
-        let contentState = PomodoroActivityAttributes.ContentState(
-            remainingTime: remainingTime,
-            sessionType: sessionTypeText
-        )
-        do {
-            activity = try Activity<PomodoroActivityAttributes>.request(
-                attributes: attributes,
-                contentState: contentState,
-                pushType: nil
+        #if canImport(ActivityKit)
+        if #available(iOS 16.2, *) {
+            let attributes = PomodoroActivityAttributes(
+                totalTime: totalTime,
+                sessionType: sessionTypeText
             )
-        } catch {
-            print("Failed to start Live Activity: \\(error)")
+            let contentState = PomodoroActivityAttributes.ContentState(
+                remainingTime: remainingTime,
+                sessionType: sessionTypeText
+            )
+            do {
+                activity = try Activity<PomodoroActivityAttributes>.request(
+                    attributes: attributes,
+                    contentState: contentState,
+                    pushType: nil
+                )
+            } catch {
+                print("Failed to start Live Activity: \(error)")
+            }
         }
+        #endif
     }
     
     func updateLiveActivity() {
-        let contentState = PomodoroActivityAttributes.ContentState(
-            remainingTime: remainingTime,
-            sessionType: sessionTypeText
-        )
-        Task {
-            await activity?.update(using: contentState)
+        #if canImport(ActivityKit)
+        if #available(iOS 16.2, *) {
+            let contentState = PomodoroActivityAttributes.ContentState(
+                remainingTime: remainingTime,
+                sessionType: sessionTypeText
+            )
+            Task {
+                await activity?.update(using: contentState)
+            }
         }
+        #endif
     }
     
     func endLiveActivity() {
-        Task {
-            await activity?.end(dismissalPolicy: .immediate)
+        #if canImport(ActivityKit)
+        if #available(iOS 16.2, *) {
+            Task {
+                await activity?.end(dismissalPolicy: .immediate)
+            }
         }
+        #endif
     }
     
     private var sessionTypeText: String {

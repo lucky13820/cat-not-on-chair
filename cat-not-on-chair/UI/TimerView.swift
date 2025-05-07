@@ -1,9 +1,11 @@
 import SwiftUI
+
+#if canImport(ActivityKit)
 import ActivityKit
+#endif
 
 struct TimerView: View {
-    @StateObject private var viewModel = PomodoroTimerViewModel()
-    @EnvironmentObject private var blockModeService: BlockModeService
+    @ObservedObject var viewModel: PomodoroTimerViewModel
     
     private func formattedTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
@@ -15,23 +17,6 @@ struct TimerView: View {
         GeometryReader { geometry in
             VStack(spacing: 32) {
                 Spacer()
-                
-                // Block Mode Indicator
-                if blockModeService.isBlockModeEnabled && blockModeService.isCurrentlyBlocking {
-                    HStack {
-                        Image(systemName: "lock.shield.fill")
-                            .foregroundColor(.green)
-                        Text("Block Mode Active")
-                            .font(.subheadline)
-                            .foregroundColor(.green)
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal, 16)
-                    .background(
-                        Capsule()
-                            .fill(Color.green.opacity(0.2))
-                    )
-                }
                 
                 // Chair and Cat
                 ZStack {
@@ -64,6 +49,11 @@ struct TimerView: View {
                     .foregroundColor(.secondary)
                     .accessibilityLabel("Session type: \(sessionTypeText)")
                 
+                // Blocking Mode
+                Text("Blocking: \(viewModel.blockingMode.displayName)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
                 // Controls
                 HStack(spacing: 24) {
                     Button(action: { viewModel.reset() }) {
@@ -90,16 +80,8 @@ struct TimerView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-            .background(Color(uiColor: .systemBackground))
+            .background(Color(.systemBackground))
             .ignoresSafeArea(edges: .bottom)
-            .onReceive(NotificationCenter.default.publisher(for: .blockModeDidStart)) { _ in
-                if viewModel.sessionType == .focus && viewModel.timerState == .running {
-                    // Show block mode started alert or other UI indication
-                }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .blockModeDidEnd)) { _ in
-                // Handle block mode ended
-            }
         }
     }
     
@@ -115,11 +97,9 @@ struct TimerView: View {
 struct TimerView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TimerView()
-                .environmentObject(BlockModeService())
+            TimerView(viewModel: PomodoroTimerViewModel())
                 .preferredColorScheme(.light)
-            TimerView()
-                .environmentObject(BlockModeService())
+            TimerView(viewModel: PomodoroTimerViewModel())
                 .preferredColorScheme(.dark)
         }
     }
